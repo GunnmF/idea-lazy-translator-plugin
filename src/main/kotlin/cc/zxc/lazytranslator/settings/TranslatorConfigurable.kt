@@ -11,7 +11,7 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.ComponentPredicate
+import com.intellij.ui.layout.ComponentPredicate
 import com.intellij.ui.dsl.builder.bindItem
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
