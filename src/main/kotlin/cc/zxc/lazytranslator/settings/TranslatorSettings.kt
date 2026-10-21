@@ -14,10 +14,19 @@ import com.intellij.openapi.components.Storage
 class TranslatorSettings : PersistentStateComponent<TranslatorSettings.State> {
 
     class State {
+        /** 翻译引擎：AI（OpenAI 兼容）或 LibreTranslate，二选一 */
+        var engineType: String = ENGINE_AI
+
         /** OpenAI 兼容接口地址，如 https://api.openai.com/v1 、https://api.deepseek.com/v1 */
         var baseUrl: String = "https://api.openai.com/v1"
         var apiKey: String = ""
         var model: String = "gpt-4o-mini"
+
+        /** LibreTranslate 服务地址 */
+        var libreBaseUrl: String = "https://libretranslate.com"
+
+        /** LibreTranslate API Key（官方实例需要，自建通常可留空） */
+        var libreApiKey: String = ""
 
         /** 默认命名格式（快速替换时使用）：camelCase / PascalCase / snake_case / UPPER_SNAKE_CASE / kebab-case / raw */
         var defaultFormat: String = "camelCase"
@@ -38,6 +47,9 @@ class TranslatorSettings : PersistentStateComponent<TranslatorSettings.State> {
     }
 
     companion object {
+        const val ENGINE_AI = "AI"
+        const val ENGINE_LIBRE = "LibreTranslate"
+
         fun getInstance(): TranslatorSettings =
             ApplicationManager.getApplication().getService(TranslatorSettings::class.java)
     }

@@ -8,8 +8,10 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.ComponentPredicate
 import com.intellij.ui.dsl.builder.bindItem
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
@@ -36,7 +38,25 @@ class TranslatorConfigurable : Configurable {
         val s = state
         val formats = Naming.Format.entries.map { it.label }
 
+        lateinit var engineCombo: ComboBox<String>
+
+        // 当前下拉里选中的是哪个引擎，用于切换下方配置组的显示
+        fun enginePredicate(isAi: Boolean) = object : ComponentPredicate() {
+            override fun invoke(): Boolean =
+                ((engineCombo.selectedItem?.toString() ?: s.engineType) == TranslatorSettings.ENGINE_AI) == isAi
+
+            override fun addListener(listener: (Boolean) -> Unit) {
+                engineCombo.addActionListener { listener(invoke()) }
+            }
+        }
+
         val p = panel {
+            row("翻译引擎:") {
+                engineCombo = comboBox(listOf(TranslatorSettings.ENGINE_AI, TranslatorSettings.ENGINE_LIBRE))
+                    .bindItem({ s.engineType }, { s.engineType = it ?: TranslatorSettings.ENGINE_AI })
+                    .comment("AI：OpenAI 兼容接口（DeepSeek / Moonshot / Ollama 等）；LibreTranslate：开源翻译服务，二选一")
+                    .component
+            }
             group("AI 服务配置（OpenAI 兼容接口）") {
                 row("Base URL:") {
                     textField()
@@ -55,24 +75,38 @@ class TranslatorConfigurable : Configurable {
                         .align(Align.FILL)
                         .comment("如 gpt-4o-mini 、deepseek-chat 、moonshot-v1-8k")
                 }
-                row {
-                    testButton = button("测试连接") { onTestClicked() }.component
+                row("温度:") {
+                    textField()
+                        .bindText({ s.temperature.toString() }, { s.temperature = it.toDoubleOrNull() ?: 0.1 })
+                        .comment("0~1，越低输出越稳定，翻译建议 0.1（仅 AI 引擎生效）")
                 }
-            }
+            }.visibleIf(enginePredicate(isAi = true))
+            group("LibreTranslate 配置") {
+                row("Base URL:") {
+                    textField()
+                        .bindText(s::libreBaseUrl)
+                        .align(Align.FILL)
+                        .comment("自建或官方地址，如 https://libretranslate.com")
+                }
+                row("API Key:") {
+                    passwordField()
+                        .bindText(s::libreApiKey)
+                        .align(Align.FILL)
+                        .comment("官方实例需要；自建实例通常可留空")
+                }
+            }.visibleIf(enginePredicate(isAi = false))
             group("翻译规则") {
                 row("默认命名格式:") {
                     comboBox(formats)
                         .bindItem({ s.defaultFormat }, { s.defaultFormat = it ?: "camelCase" })
                         .comment("「快速翻译替换」直接使用的格式")
                 }
-                row("温度:") {
-                    textField()
-                        .bindText({ s.temperature.toString() }, { s.temperature = it.toDoubleOrNull() ?: 0.1 })
-                        .comment("0~1，越低输出越稳定，翻译建议 0.1")
-                }
                 row("超时（秒）:") {
                     textField()
                         .bindText({ s.timeoutSeconds.toString() }, { s.timeoutSeconds = it.toIntOrNull() ?: 60 })
+                }
+                row {
+                    testButton = button("测试连接") { onTestClicked() }.component
                 }
             }
         }
@@ -99,7 +133,7 @@ class TranslatorConfigurable : Configurable {
                 testFuture = null
                 setBusy(busy = false)
                 when {
-                    error == null -> Messages.showInfoMessage("连接成功，模型返回：$reply", "Lazy Translator")
+                    error == null -> Messages.showInfoMessage("连接成功，返回：$reply", "Lazy Translator")
                     error.isCancel() -> balloon("已取消测试连接。", NotificationType.INFORMATION)
                     else -> Messages.showErrorDialog("连接失败：${rootMessage(error)}", "Lazy Translator")
                 }

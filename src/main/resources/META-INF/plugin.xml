@@ -11,7 +11,7 @@
             <li>Select Chinese text and translate it into an English variable name</li>
             <li>One-click conversion to camelCase / PascalCase / snake_case / UPPER_SNAKE_CASE / kebab-case</li>
             <li>Reverse translation: English selection is translated back to Chinese</li>
-            <li>Works with any OpenAI-compatible API (OpenAI, DeepSeek, Moonshot, Ollama, ...)</li>
+            <li>Two engines to choose from: any OpenAI-compatible API (OpenAI, DeepSeek, Moonshot, Ollama, ...) or LibreTranslate</li>
             <li>Your text is sent only to the AI endpoint you configure - no data is collected</li>
         </ul>
         Usage: select text in the editor, right-click and choose "翻译变量名" (Alt+T),
@@ -20,7 +20,7 @@
         <br/>
         简单翻译（Lazy Translator）：选中代码里的中文，右键「翻译变量名」即可翻译成英文变量名，
         支持 camelCase / PascalCase / snake_case / UPPER_SNAKE_CASE / kebab-case 格式选择并直接替换；
-        选中英文则反向翻译为中文。兼容任意 OpenAI 接口（DeepSeek / Moonshot / Ollama 等）。
+        选中英文则反向翻译为中文。翻译引擎二选一：AI（任意 OpenAI 兼容接口：DeepSeek / Moonshot / Ollama 等）或 LibreTranslate 开源翻译服务。
         配置入口：Settings → Tools → Lazy Translator。
     ]]></description>
 

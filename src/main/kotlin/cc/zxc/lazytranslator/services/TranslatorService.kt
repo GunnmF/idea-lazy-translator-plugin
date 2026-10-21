@@ -30,13 +30,22 @@ object TranslatorService {
      */
     fun translateAsync(text: String, concise: Boolean): CompletableFuture<String> {
         val s = TranslatorSettings.getInstance().state
+        if (s.engineType == TranslatorSettings.ENGINE_LIBRE) {
+            return libreTranslateAsync(text, concise)
+        }
         val system = if (concise) buildConcisePrompt() else buildNormalPrompt()
         return chatAsync(system, text).thenApply { it.trim() }
     }
 
-    /** 设置页「测试连接」用 */
-    fun testConnectionAsync(): CompletableFuture<String> =
-        chatAsync(null, "只回复：ok")
+    /** 设置页「测试连接」用：测当前选中的引擎 */
+    fun testConnectionAsync(): CompletableFuture<String> {
+        val s = TranslatorSettings.getInstance().state
+        return if (s.engineType == TranslatorSettings.ENGINE_LIBRE) {
+            libreTranslateAsync("hello", concise = true)
+        } else {
+            chatAsync(null, "只回复：ok")
+        }
+    }
 
     /** 变量名场景：返回简短英文短语，不要句子 */
     private fun buildConcisePrompt(): String = """
@@ -57,6 +66,38 @@ object TranslatorService {
         Output ONLY the translated text. Do not add explanations, quotes or formatting.
         Preserve code-like tokens (camelCase, snake_case, etc.) as-is when present.
     """.trimIndent()
+
+    /**
+     * LibreTranslate 翻译：POST {libreBaseUrl}/translate
+     *
+     * @param concise true = 变量名场景（目标 en）；false = 反向翻译（目标 zh）
+     */
+    private fun libreTranslateAsync(text: String, concise: Boolean): CompletableFuture<String> {
+        val s = TranslatorSettings.getInstance().state
+        require(s.libreBaseUrl.isNotBlank()) { "请先在 Settings → Tools → Lazy Translator 中配置 LibreTranslate 地址" }
+
+        val payload = JsonObject().apply {
+            addProperty("q", text)
+            addProperty("source", "auto")
+            addProperty("target", if (concise) "en" else "zh")
+            addProperty("format", "text")
+            if (s.libreApiKey.isNotBlank()) addProperty("api_key", s.libreApiKey)
+        }
+
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(s.libreBaseUrl.trimEnd('/') + "/translate"))
+            .timeout(Duration.ofSeconds(s.timeoutSeconds.toLong().coerceIn(5, 300)))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(payload)))
+            .build()
+
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply { response ->
+            if (response.statusCode() !in 200..299) {
+                throw RuntimeException("LibreTranslate 请求失败 (HTTP ${response.statusCode()})：${response.body().take(500)}")
+            }
+            gson.fromJson(response.body(), JsonObject::class.java)["translatedText"].asString
+        }
+    }
 
     private fun chatAsync(system: String?, user: String): CompletableFuture<String> {
         val s = TranslatorSettings.getInstance().state
