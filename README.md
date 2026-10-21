@@ -64,7 +64,7 @@ src/main/kotlin/cc/zxc/lazytranslator/
 
 ## 发版（GitHub Actions）
 
-推 `master` 分支自动触发 `.github/workflows/release.yml`：
+推 `main` 分支自动触发 `.github/workflows/release.yml`：
 
 1. 计算版本号：`gradle.properties` 的 major.minor + CI 构建号（如 `0.2.7`）
 2. 该版本 Release 已存在且有 zip 则跳过（防重复发版，挂了会自动补齐）
