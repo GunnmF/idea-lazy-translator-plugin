@@ -1,6 +1,6 @@
-package cc.zxc.aitranslator.actions
+package cc.zxc.lazytranslator.actions
 
-import cc.zxc.aitranslator.utils.Naming
+import cc.zxc.lazytranslator.utils.Naming
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -39,7 +39,7 @@ abstract class BaseTranslateAction : AnAction() {
         // 含中文 → 变量名场景（译为简短英文）；否则 → 反向翻译为中文
         val concise = Naming.containsCjk(text)
 
-        cc.zxc.aitranslator.services.TranslatorService.translateAsync(text, concise)
+        cc.zxc.lazytranslator.services.TranslatorService.translateAsync(text, concise)
             .whenComplete { translated, error ->
                 ApplicationManager.getApplication().invokeLater {
                     when {

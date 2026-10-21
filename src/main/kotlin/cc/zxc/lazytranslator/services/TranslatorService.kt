@@ -1,6 +1,6 @@
-package cc.zxc.aitranslator.services
+package cc.zxc.lazytranslator.services
 
-import cc.zxc.aitranslator.settings.TranslatorSettings
+import cc.zxc.lazytranslator.settings.TranslatorSettings
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import java.net.URI

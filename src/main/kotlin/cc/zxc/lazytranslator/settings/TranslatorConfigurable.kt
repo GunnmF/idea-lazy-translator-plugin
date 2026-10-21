@@ -1,7 +1,7 @@
-package cc.zxc.aitranslator.settings
+package cc.zxc.lazytranslator.settings
 
-import cc.zxc.aitranslator.services.TranslatorService
-import cc.zxc.aitranslator.utils.Naming
+import cc.zxc.lazytranslator.services.TranslatorService
+import cc.zxc.lazytranslator.utils.Naming
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager

@@ -1,4 +1,4 @@
-package cc.zxc.aitranslator.utils
+package cc.zxc.lazytranslator.utils
 
 /**
  * 命名格式转换工具（移植自 vscode-ai-translator 的 naming.ts）

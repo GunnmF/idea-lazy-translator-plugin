@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>cc.zxc.aitranslator</id>
+    <id>cc.zxc.lazytranslator</id>
     <name>Lazy Translator</name>
     <vendor>zxc</vendor>
 
@@ -29,24 +29,24 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable
                 parentId="tools"
-                instance="cc.zxc.aitranslator.settings.TranslatorConfigurable"
-                id="cc.zxc.aitranslator.settings"
+                instance="cc.zxc.lazytranslator.settings.TranslatorConfigurable"
+                id="cc.zxc.lazytranslator.settings"
                 displayName="Lazy Translator"/>
         <notificationGroup id="Lazy Translator" displayType="BALLOON"/>
     </extensions>
 
     <actions>
         <!-- 编辑器右键菜单：翻译变量名（弹窗选格式） -->
-        <action id="cc.zxc.aitranslator.TranslateVariable"
-                class="cc.zxc.aitranslator.actions.TranslateVariableAction"
+        <action id="cc.zxc.lazytranslator.TranslateVariable"
+                class="cc.zxc.lazytranslator.actions.TranslateVariableAction"
                 text="翻译变量名…"
                 description="将选中文本翻译为变量名，弹窗选择命名格式后替换">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
             <keyboard-shortcut keymap="$default" first-keystroke="alt T"/>
         </action>
         <!-- 编辑器右键菜单：快速翻译替换（默认格式，无弹窗） -->
-        <action id="cc.zxc.aitranslator.QuickTranslate"
-                class="cc.zxc.aitranslator.actions.QuickTranslateAction"
+        <action id="cc.zxc.lazytranslator.QuickTranslate"
+                class="cc.zxc.lazytranslator.actions.QuickTranslateAction"
                 text="快速翻译替换"
                 description="将选中文本翻译为变量名，按默认命名格式直接替换">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>

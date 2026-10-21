@@ -1,4 +1,4 @@
-package cc.zxc.aitranslator.settings
+package cc.zxc.lazytranslator.settings
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
@@ -7,10 +7,10 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 
 /**
- * AI 翻译配置，持久化到 aiTranslator.xml
+ * 简单翻译（Lazy Translator）配置，持久化到 lazyTranslator.xml
  */
 @Service(Service.Level.APP)
-@State(name = "AiTranslatorSettings", storages = [Storage("aiTranslator.xml")])
+@State(name = "LazyTranslatorSettings", storages = [Storage("lazyTranslator.xml")])
 class TranslatorSettings : PersistentStateComponent<TranslatorSettings.State> {
 
     class State {

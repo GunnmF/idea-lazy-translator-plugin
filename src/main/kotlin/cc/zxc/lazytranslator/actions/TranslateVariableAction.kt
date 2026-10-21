@@ -1,6 +1,6 @@
-package cc.zxc.aitranslator.actions
+package cc.zxc.lazytranslator.actions
 
-import cc.zxc.aitranslator.utils.Naming
+import cc.zxc.lazytranslator.utils.Naming
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
