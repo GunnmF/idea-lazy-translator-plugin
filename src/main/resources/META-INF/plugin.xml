@@ -1,0 +1,56 @@
+<idea-plugin>
+    <id>cc.zxc.aitranslator</id>
+    <name>Lazy Translator</name>
+    <vendor>zxc</vendor>
+
+    <description><![CDATA[
+        Translate variable names and text with AI, right inside the editor.<br/>
+        <br/>
+        Features:<br/>
+        <ul>
+            <li>Select Chinese text and translate it into an English variable name</li>
+            <li>One-click conversion to camelCase / PascalCase / snake_case / UPPER_SNAKE_CASE / kebab-case</li>
+            <li>Reverse translation: English selection is translated back to Chinese</li>
+            <li>Works with any OpenAI-compatible API (OpenAI, DeepSeek, Moonshot, Ollama, ...)</li>
+            <li>Your text is sent only to the AI endpoint you configure - no data is collected</li>
+        </ul>
+        Usage: select text in the editor, right-click and choose "翻译变量名" (Alt+T),
+        or use "快速翻译替换" (Alt+Shift+T) to replace with the default naming format directly.<br/>
+        Configuration: Settings → Tools → Lazy Translator.<br/>
+        <br/>
+        简单翻译（Lazy Translator）：选中代码里的中文，右键「翻译变量名」即可翻译成英文变量名，
+        支持 camelCase / PascalCase / snake_case / UPPER_SNAKE_CASE / kebab-case 格式选择并直接替换；
+        选中英文则反向翻译为中文。兼容任意 OpenAI 接口（DeepSeek / Moonshot / Ollama 等）。
+        配置入口：Settings → Tools → Lazy Translator。
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable
+                parentId="tools"
+                instance="cc.zxc.aitranslator.settings.TranslatorConfigurable"
+                id="cc.zxc.aitranslator.settings"
+                displayName="Lazy Translator"/>
+        <notificationGroup id="Lazy Translator" displayType="BALLOON"/>
+    </extensions>
+
+    <actions>
+        <!-- 编辑器右键菜单：翻译变量名（弹窗选格式） -->
+        <action id="cc.zxc.aitranslator.TranslateVariable"
+                class="cc.zxc.aitranslator.actions.TranslateVariableAction"
+                text="翻译变量名…"
+                description="将选中文本翻译为变量名，弹窗选择命名格式后替换">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt T"/>
+        </action>
+        <!-- 编辑器右键菜单：快速翻译替换（默认格式，无弹窗） -->
+        <action id="cc.zxc.aitranslator.QuickTranslate"
+                class="cc.zxc.aitranslator.actions.QuickTranslateAction"
+                text="快速翻译替换"
+                description="将选中文本翻译为变量名，按默认命名格式直接替换">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift T"/>
+        </action>
+    </actions>
+</idea-plugin>
